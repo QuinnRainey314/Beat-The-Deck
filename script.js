@@ -1,4 +1,7 @@
-var cardAmount = 9;
+var stackAmount = 3;
+let startGrid;
+let drawDeck;
+let myDeck;
 
 function card(value, name, suit) {
     this.value = value;
@@ -25,14 +28,47 @@ function shuffle(o) {
     return o;
 }
 
-var myDeck = new deck();
-myDeck = shuffle(myDeck);
+document.addEventListener('DOMContentLoaded', function() {
+    const stackAmountSlider = document.getElementById('stack-amount');
+    const stackAmountValue = document.getElementById('stack-amount-value');
+    const startGameButton = document.getElementById('start-game');
+    const titleScreen = document.getElementById('title-screen');
+    const gameArea = document.getElementById('game-area');
 
-const startGrid = myDeck.slice(0, cardAmount);
-const drawDeck = myDeck.slice(cardAmount, 52);
+    stackAmountSlider.addEventListener('input', function() {
+        stackAmount = parseInt(this.value);
+        stackAmountValue.textContent = stackAmount;
+    });
 
-window.onload = function () {
+    startGameButton.addEventListener('click', function() {
+        titleScreen.style.display = 'none';
+        gameArea.style.display = 'block';
+        startGame();
+    });
+});
+
+function startGame() {
+    myDeck = new deck();
+    myDeck = shuffle(myDeck);
+
+    startGrid = myDeck.slice(0, 9);
+    drawDeck = myDeck.slice(9, 52);
+
+    updateDrawPileCount();
+    createCards();
+}
+
+function updateDrawPileCount() {
+    document.getElementById('draw-count').textContent = drawDeck.length;
+}
+
+function createCards() {
     const cardContainer = document.getElementById('card-container');
+    cardContainer.innerHTML = '';
+    cardContainer.style.setProperty('--stack-amount', stackAmount);
+
+    // Force reflow to update grid layout
+    cardContainer.offsetWidth;
 
     for (let i = 0; i < startGrid.length; i++) {
         const div = document.createElement('div');
@@ -89,7 +125,7 @@ window.onload = function () {
 
         cardContainer.appendChild(div);
     }
-};
+}
 
 function showNotification(message) {
     const notificationArea = document.getElementById('notification-area');
@@ -104,7 +140,14 @@ function showNotification(message) {
 }
 
 function bet(choice, selectedIndex) {
+    const cardContainer = document.getElementById('card-container');
     const selectedCard = startGrid[selectedIndex];
+
+    if (cardContainer.children[selectedIndex].classList.contains('flipped')) {
+        showNotification("This stack is flipped. Choose another.");
+        return;
+    }
+
     showNotification(`You chose ${choice} for card ${selectedCard.name} of ${selectedCard.suit}.`);
 
     if (drawDeck.length === 0) {
@@ -130,6 +173,7 @@ function bet(choice, selectedIndex) {
         flipStack(selectedIndex);
     }
 
+    updateDrawPileCount();
     checkGameOver();
 }
 
@@ -187,6 +231,7 @@ function flipStack(index) {
     const cardContainer = document.getElementById('card-container');
     const cardDiv = cardContainer.children[index];
     cardDiv.classList.add('flipped');
+    cardDiv.querySelector('.buttons').style.display = 'none';
 }
 
 function checkGameOver() {

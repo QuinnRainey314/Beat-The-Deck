@@ -7,8 +7,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="notification-area"></div> 
-    <div id="card-container"></div> 
+    <div id="title-screen">
+        <h1>Beat the Deck</h1>
+        <div class="slider-container">
+            <label for="stack-amount">Number of Stacks:</label>
+            <input type="range" id="stack-amount" name="stack-amount" min="1" max="18" value="9">
+            <span id="stack-amount-value">9</span>
+        </div>
+        <button id="start-game">Start Game</button>
+    </div>
+
+    <div id="game-area" style="display: none;">
+        <div id="notification-area"></div>
+        <div id="card-container"></div>
+        <div id="draw-pile-count">Cards Left: <span id="draw-count"></span></div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
