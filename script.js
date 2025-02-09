@@ -1,3 +1,5 @@
+var cardAmount = 9;
+
 function card(value, name, suit){
     this.value = value;
     this.name = name;
@@ -26,27 +28,31 @@ function shuffle(o) {
 var myDeck = new deck();
 myDeck = shuffle(myDeck);
 
+const startGrid = myDeck.slice(0, cardAmount);
 
-/*
+
 window.onload = function() {
-    for(var i=0; i < myDeck.length; i++){
+    const cardContainer = document.getElementById('card-container');
+
+    for(var i=0; i < startGrid.length; i++){
         div = document.createElement('div');
         div.className = 'card';
 
-        if (myDeck[i].suit == 'Diamonds'){
+        if (startGrid[i].suit == 'Diamonds'){
             var ascii_char = '♦'
-        } else if (myDeck[i].suit == 'Spades'){
+        } else if (startGrid[i].suit == 'Spades'){
             var ascii_char = '♠'
-        } else if (myDeck[i].suit == 'Clubs'){
+        } else if (startGrid[i].suit == 'Clubs'){
             var ascii_char = '♣'
-        } else if (myDeck[i].suit == 'Hearts'){
+        } else if (startGrid[i].suit == 'Hearts'){
             var ascii_char = '♥'
         }
 
-        div.innerHTML = '' + myDeck[i].name + '' + ascii_char + '';
-        document.body.appendChild(div);
+        div.innerHTML = '' + startGrid[i].name + '' + ascii_char + '';
+        div.setAttribute('data-value', startGrid[i].name);
+        cardContainer.appendChild(div);
     }
 
 }
-*/
+
 
