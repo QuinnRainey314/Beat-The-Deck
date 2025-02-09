@@ -1,29 +1,28 @@
 #card-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    gap: 5px; /* Reduced space between cards */
-    padding: 10px; /* Optional: Add padding around the container */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 5px; 
+    padding: 10px; 
 }
 
 .card {
-    display: flex; /* Use flexbox to center content */
+    display: flex; 
     justify-content: center;
     align-items: center;
-    width: 100px; /* Fixed width for the card */
-    height: 150px; /* Fixed height for the card */
-    border: 2px solid #000; /* Darker border for a sharper look */
-    border-radius: 10px; /* Rounded corners for card shape */
+    width: 100px; 
+    height: 150px;
+    border: 2px solid #000; 
+    border-radius: 10px; 
     font-size: 24px;
     background-color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
-    text-align: center; /* Center text inside the card */
-    position: relative; /* For positioning top-left and bottom-right labels */
-    padding: 10px; /* Add padding inside the card to create space around the text */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+    text-align: center; 
+    position: relative; 
+    padding: 10px; 
 }
 
-/* Top-left and bottom-right corner value */
 .card::before, .card::after {
-    content: attr(data-value); /* Get value from custom data attribute */
+    content: attr(data-value); 
     font-size: 18px;
     font-weight: bold;
     color: #000;
@@ -40,7 +39,6 @@
     right: 5px;
 }
 
-/* Add color styling for suit symbols */
 .diamonds {
     color: red;
 }
