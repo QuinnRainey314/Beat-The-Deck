@@ -1,99 +1,144 @@
-var stackAmount = 3;
-let startGrid;
-let drawDeck;
-let myDeck;
-
-function card(value, name, suit) {
-    this.value = value;
-    this.name = name;
-    this.suit = suit;
+class Card {
+    constructor(value, name, suit) {
+        this.value = value;
+        this.name = name;
+        this.suit = suit;
+    }
 }
 
-function deck() {
-    this.names = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-    this.suits = ['Hearts', 'Diamonds', 'Spades', 'Clubs'];
-    var cards = [];
+class Deck {
+    constructor() {
+        this.names = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        this.suits = ['Hearts', 'Diamonds', 'Spades', 'Clubs'];
+        this.cards = [];
 
-    for (var s = 0; s < this.suits.length; s++) {
-        for (var n = 0; n < this.names.length; n++) {
-            cards.push(new card(n + 2, this.names[n], this.suits[s]));
+        for (let suit of this.suits) {
+            for (let i = 0; i < this.names.length; i++) {
+                this.cards.push(new Card(i + 2, this.names[i], suit));
+            }
         }
     }
 
-    return cards;
+    shuffle() {
+        for (let i = this.cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+        }
+    }
 }
 
-function shuffle(o) {
-    for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-    return o;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    let stackAmount = 9;
+    let startGrid;
+    let drawDeck;
+    let myDeck;
+    let activeIndex = null;
 
-document.addEventListener('DOMContentLoaded', function() {
     const stackAmountSlider = document.getElementById('stack-amount');
     const stackAmountValue = document.getElementById('stack-amount-value');
     const startGameButton = document.getElementById('start-game');
+    const rulesButton = document.getElementById('rules-button');
     const titleScreen = document.getElementById('title-screen');
     const gameArea = document.getElementById('game-area');
-
-    stackAmountSlider.addEventListener('input', function() {
-        stackAmount = parseInt(this.value);
-        stackAmountValue.textContent = stackAmount;
-    });
-
-    startGameButton.addEventListener('click', function() {
-        titleScreen.style.display = 'none';
-        gameArea.style.display = 'block';
-        startGame();
-    });
-});
-
-function startGame() {
-    myDeck = new deck();
-    myDeck = shuffle(myDeck);
-
-    startGrid = myDeck.slice(0, 9);
-    drawDeck = myDeck.slice(9, 52);
-
-    updateDrawPileCount();
-    createCards();
-}
-
-function updateDrawPileCount() {
-    document.getElementById('draw-count').textContent = drawDeck.length;
-}
-
-function createCards() {
     const cardContainer = document.getElementById('card-container');
-    cardContainer.innerHTML = '';
-    cardContainer.style.setProperty('--stack-amount', stackAmount);
+    const rulesScreen = document.getElementById('rules-screen');
+    const backToTitleButton = document.getElementById('back-to-title');
+    const playAgainButton = document.createElement('button');
+    playAgainButton.textContent = 'Play Again';
+    playAgainButton.id = 'play-again';  // Add an ID for styling and access
+    playAgainButton.style.display = 'none'; // Initially hidden
 
-    // Force reflow to update grid layout
-    cardContainer.offsetWidth;
+      // --- Audio Setup ---
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)(); //For compatability
+    let dealSound, correctSound, incorrectSound, winSound, loseSound, clickSound, hoverSound; // Add hoverSound
+
+    // Helper function to load audio files
+      function loadSound(url, callback) {
+        fetch(url) //Modern way to load
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.arrayBuffer();
+            })
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(decodedAudio => {
+                callback(decodedAudio);
+            })
+            .catch(error => console.error("Error loading sound:", error));
+    }
+
+    // Load all the sounds
+    loadSound('sounds/deal.wav', function(buffer) { dealSound = buffer; });
+    loadSound('sounds/correct.wav', function(buffer) { correctSound = buffer; });
+    loadSound('sounds/incorrect.wav', function(buffer) { incorrectSound = buffer; });
+    loadSound('sounds/win.wav', function(buffer) { winSound = buffer; });
+    loadSound('sounds/lose.wav', function(buffer) { loseSound = buffer; });
+    loadSound('sounds/click.wav', function(buffer) { clickSound = buffer; });
+    loadSound('sounds/hover.wav', function(buffer) { hoverSound = buffer; }); // Load hover sound
+
+
+    // Helper function to play sounds using Web Audio API.
+    function playSound(buffer) {
+        if (!buffer) return; // Don't play if not loaded yet
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0); // Play immediately
+    }
+
+    function updateDrawPileCount() {
+        document.getElementById('draw-count').textContent = drawDeck.length;
+    }
+
+    function dealCard() {
+        return drawDeck.length > 0 ? drawDeck.shift() : null;
+    }
+
+    function updateGrid() {
+        let columns = Math.min(stackAmount, 3);
+        let rows = Math.ceil(stackAmount / columns);
+        cardContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+        cardContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    }
+
+    function startGame() {
+        // Hide title screen and potentially other screens
+        titleScreen.style.display = 'none';
+        rulesScreen.style.display = 'none';
+        gameArea.style.display = 'block';
+        playAgainButton.style.display = 'none'; //Hide play again
+
+        myDeck = new Deck();
+        myDeck.shuffle();
+        startGrid = myDeck.cards.slice(0, stackAmount);
+        drawDeck = myDeck.cards.slice(stackAmount);
+
+        updateDrawPileCount();
+        createCards();
+        updateGrid();
+        //Append to body when the game has started.
+        document.body.appendChild(playAgainButton);
+        playSound(dealSound); // Play deal sound on game start
+    }
+
+  function createCards() {
+    cardContainer.innerHTML = '';
+    activeIndex = null;
 
     for (let i = 0; i < startGrid.length; i++) {
+        const card = startGrid[i];
         const div = document.createElement('div');
         div.className = 'card';
-        div.setAttribute('data-index', i);
-
-        const card = startGrid[i];
+        div.dataset.index = i;
 
         const valueDiv = document.createElement('div');
         valueDiv.className = 'value';
         valueDiv.textContent = card.name;
 
         const suitDiv = document.createElement('div');
-        suitDiv.className = 'suit ' + card.suit.toLowerCase();
-        let ascii_char;
-        switch (card.suit) {
-            case 'Diamonds': ascii_char = '♦'; break;
-            case 'Spades': ascii_char = '♠'; break;
-            case 'Clubs': ascii_char = '♣'; break;
-            case 'Hearts': ascii_char = '♥'; break;
-        }
-        suitDiv.textContent = ascii_char;
-
-        div.appendChild(valueDiv);
-        div.appendChild(suitDiv);
+        suitDiv.className = `suit ${card.suit.toLowerCase()}`;
+        suitDiv.textContent = getSuitSymbol(card.suit);
 
         const buttonsDiv = document.createElement('div');
         buttonsDiv.className = 'buttons';
@@ -101,141 +146,195 @@ function createCards() {
         const higherButton = document.createElement('button');
         higherButton.className = 'higher';
         higherButton.textContent = 'Higher';
-        higherButton.addEventListener('click', function () {
-            bet('higher', i);
+        higherButton.addEventListener('click', () => {
+            if (div.classList.contains('active')) {
+                bet('higher', i);
+            }
         });
 
         const lowerButton = document.createElement('button');
         lowerButton.className = 'lower';
         lowerButton.textContent = 'Lower';
-        lowerButton.addEventListener('click', function () {
-            bet('lower', i);
+        lowerButton.addEventListener('click', () => {
+            if (div.classList.contains('active')) {
+                bet('lower', i);
+            }
         });
+
 
         buttonsDiv.appendChild(higherButton);
         buttonsDiv.appendChild(lowerButton);
+        buttonsDiv.style.display = "none"; // Initially hide
 
+        div.appendChild(valueDiv);
+        div.appendChild(suitDiv);
         div.appendChild(buttonsDiv);
 
-        div.addEventListener('click', function () {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => card.classList.remove('active'));
-            div.classList.add('active');
+        // Add mouseover and mouseout event listeners
+        div.addEventListener('mouseover', () => {
+          if (!div.classList.contains('flipped')) {
+            playSound(hoverSound);
+          }
+        });
+
+
+        div.addEventListener('click', () => {
+          const cards = document.querySelectorAll('.card');
+            if (!div.classList.contains('flipped')) {
+                // Hide buttons and remove 'active' from ALL cards
+                cards.forEach(c => {
+                    c.classList.remove('active');
+                    c.querySelector('.buttons').style.display = 'none';
+                });
+
+                // Show buttons and set 'active' on the CLICKED card
+                div.classList.add('active');
+                buttonsDiv.style.display = 'flex'; // Show buttons
+                activeIndex = i;
+            }
         });
 
         cardContainer.appendChild(div);
     }
 }
-
-function showNotification(message) {
-    const notificationArea = document.getElementById('notification-area');
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.textContent = message;
-    notificationArea.appendChild(notification);
-
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
-
-function bet(choice, selectedIndex) {
-    const cardContainer = document.getElementById('card-container');
-    const selectedCard = startGrid[selectedIndex];
-
-    if (cardContainer.children[selectedIndex].classList.contains('flipped')) {
-        showNotification("This stack is flipped. Choose another.");
-        return;
+    function getSuitSymbol(suit) {
+        switch (suit) {
+            case 'Diamonds': return '♦';
+            case 'Spades':  return '♠';
+            case 'Clubs':   return '♣';
+            case 'Hearts':  return '♥';
+            default:        return '';
+        }
     }
 
-    showNotification(`You chose ${choice} for card ${selectedCard.name} of ${selectedCard.suit}.`);
+    function showNotification(message) {
+        const notificationArea = document.getElementById('notification-area');
+        notificationArea.innerHTML += `<div class="notification">${message}</div>`;
 
-    if (drawDeck.length === 0) {
-        showNotification("Game over! No more cards left.");
-        return;
+        setTimeout(() => {
+            if (notificationArea.firstChild) {
+                notificationArea.removeChild(notificationArea.firstChild);
+            }
+        }, 3000);
     }
 
-    const nextCard = drawDeck.shift();
-    showNotification(`Next card: ${nextCard.name} of ${nextCard.suit}.`);
+    function bet(choice, selectedIndex) {
+      if (activeIndex === null) {
+          showNotification("Please select a card stack first.");
+          return;
+      }
+      const cardContainer = document.getElementById('card-container');
+        if (cardContainer.children[selectedIndex].classList.contains('flipped')) {
+            showNotification("This stack is flipped. Choose another.");
+            return;
+        }
 
-    let betResult = false;
-    if (choice === 'higher' && nextCard.value > selectedCard.value) {
-        betResult = true;
-    } else if (choice === 'lower' && nextCard.value < selectedCard.value) {
-        betResult = true;
+        const selectedCard = startGrid[selectedIndex];
+        const nextCard = dealCard();
+
+        if (!nextCard) {
+            checkGameOver();
+            return;
+        }
+
+        showNotification(`Next card: ${nextCard.name} of ${nextCard.suit}.`);
+
+        const betIsCorrect = (choice === 'higher' && nextCard.value > selectedCard.value) ||
+                            (choice === 'lower' && nextCard.value < selectedCard.value);
+
+        if (betIsCorrect) {
+            showNotification(`Correct!`);
+            playSound(correctSound); // Play correct sound
+            replaceCard(selectedIndex, nextCard);
+        } else {
+            showNotification(`Incorrect! This stack is now flipped.`);
+            playSound(incorrectSound); // Play incorrect sound
+            flipStack(selectedIndex);
+        }
+
+        updateDrawPileCount();
+        checkGameOver();
     }
 
-    if (betResult) {
-        showNotification(`Correct! The next card is ${nextCard.name} of ${nextCard.suit}.`);
-        replaceCard(selectedIndex, nextCard);
-    } else {
-        showNotification(`Incorrect! The next card is ${nextCard.name} of ${nextCard.suit}. This stack is now flipped.`);
-        flipStack(selectedIndex);
+    function replaceCard(index, newCard) {
+      const cardContainer = document.getElementById('card-container');
+        const cardDiv = cardContainer.children[index];
+        if (!cardDiv) return;
+
+        // Update card content directly
+        cardDiv.querySelector('.value').textContent = newCard.name;
+        cardDiv.querySelector('.suit').className = `suit ${newCard.suit.toLowerCase()}`;
+        cardDiv.querySelector('.suit').textContent = getSuitSymbol(newCard.suit);
+
+        // Update game state.  Do NOT touch active class or buttons here.
+        startGrid[index] = newCard;
     }
 
-    updateDrawPileCount();
-    checkGameOver();
-}
+    function flipStack(index) {
+        const cardContainer = document.getElementById('card-container');
+        const cardDiv = cardContainer.children[index]; // Use children
+        if (cardDiv) {
+          cardDiv.classList.add('flipped');
+          cardDiv.classList.remove('active');
+          cardDiv.querySelector('.buttons').style.display = 'none'; //Hide buttons
+          activeIndex = null;
+        }
 
-function replaceCard(index, newCard) {
-    const cardContainer = document.getElementById('card-container');
-    const cardDiv = cardContainer.children[index];
-
-    let ascii_char;
-    switch (newCard.suit) {
-        case 'Diamonds': ascii_char = '♦'; break;
-        case 'Spades': ascii_char = '♠'; break;
-        case 'Clubs': ascii_char = '♣'; break;
-        case 'Hearts': ascii_char = '♥'; break;
     }
 
-    cardDiv.innerHTML = '';
+    function checkGameOver() {
+        const cardContainer = document.getElementById('card-container');
+        const allFlipped = Array.from(cardContainer.children).every(card => card.classList.contains('flipped'));
 
-    const valueDiv = document.createElement('div');
-    valueDiv.className = 'value';
-    valueDiv.textContent = newCard.name;
+        if (drawDeck.length === 0) {
+            showNotification("Game over! No more cards");
+             playSound(winSound); // Play win sound
+            playAgainButton.style.display = 'block';
+        }
 
-    const suitDiv = document.createElement('div');
-    suitDiv.className = 'suit ' + newCard.suit.toLowerCase();
-    suitDiv.textContent = ascii_char;
+        if (allFlipped) {
+            showNotification("Game over! All stacks flipped.");
+            playSound(loseSound); // Play lose sound
+            playAgainButton.style.display = 'block'; // Show play again button
+        }
+    }
 
-    cardDiv.appendChild(valueDiv);
-    cardDiv.appendChild(suitDiv);
+     // --- Event Listeners ---
+    stackAmountValue.textContent = stackAmount;
+    updateGrid();
 
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.className = 'buttons';
-
-    const higherButton = document.createElement('button');
-    higherButton.className = 'higher';
-    higherButton.textContent = 'Higher';
-    higherButton.addEventListener('click', function () {
-        bet('higher', index);
+    stackAmountSlider.addEventListener('input', () => {
+        stackAmount = parseInt(stackAmountSlider.value);
+        stackAmountValue.textContent = stackAmount;
+        updateGrid();
     });
 
-    const lowerButton = document.createElement('button');
-    lowerButton.className = 'lower';
-    lowerButton.textContent = 'Lower';
-    lowerButton.addEventListener('click', function () {
-        bet('lower', index);
+    startGameButton.addEventListener('click', () => {
+        playSound(clickSound); // Button click sound
+        titleScreen.style.display = 'none';
+        rulesScreen.style.display = 'none';
+        gameArea.style.display = 'block';
+        startGame();
     });
 
-    buttonsDiv.appendChild(higherButton);
-    buttonsDiv.appendChild(lowerButton);
+    rulesButton.addEventListener('click', () => {
+        playSound(clickSound);
+        titleScreen.style.display = 'none';
+        gameArea.style.display = 'none';
+        rulesScreen.style.display = 'block';
+    });
 
-    cardDiv.appendChild(buttonsDiv);
+    backToTitleButton.addEventListener('click', () => {
+        playSound(clickSound);
+        rulesScreen.style.display = 'none';
+        titleScreen.style.display = 'flex';
+    });
 
-    startGrid[index] = newCard;
-}
-
-function flipStack(index) {
-    const cardContainer = document.getElementById('card-container');
-    const cardDiv = cardContainer.children[index];
-    cardDiv.classList.add('flipped');
-    cardDiv.querySelector('.buttons').style.display = 'none';
-}
-
-function checkGameOver() {
-    if (drawDeck.length === 0) {
-        showNotification("Game over! No more cards to play.");
-    }
-}
+    //Play Again Button
+    playAgainButton.addEventListener('click', () => {
+        playSound(clickSound);
+        playAgainButton.style.display = 'none'; // Hide play again button
+        gameArea.style.display = 'block'; // Show the game area
+        startGame();                     // Restart the game
+    });
+});

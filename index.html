@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beat the Deck</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="title-screen">
@@ -15,13 +16,56 @@
             <span id="stack-amount-value">9</span>
         </div>
         <button id="start-game">Start Game</button>
-    </div>
+        <button id="rules-button">Rules</button> </div>
 
     <div id="game-area" style="display: none;">
         <div id="notification-area"></div>
         <div id="card-container"></div>
         <div id="draw-pile-count">Cards Left: <span id="draw-count"></span></div>
     </div>
+
+    <div id="rules-screen" style="display: none;">
+        <h2>Beat the Deck - Rules</h2>
+        <p>
+            Beat the Deck is a single-player card game where you try to use up all the cards in your draw pile by
+            correctly guessing whether the next card will be higher or lower than the top card of a chosen stack.
+        </p>
+        <p>
+            1. <b>Setup:</b> The game starts with a standard 52-card deck.  Nine cards are dealt face-up into a 3x3 grid
+            (or a different number of stacks if you change the slider).  The remaining cards form the draw pile.
+        </p>
+        <p>
+            2. <b>Gameplay:</b>
+            <ul>
+                <li>Select one of the face-up card stacks.</li>
+                <li>Bet whether the next card drawn from the draw pile will be <em>higher</em> or <em>lower</em> in value than
+                the top card of the selected stack.  (Ace is high).</li>
+                <li>If you guess correctly, the drawn card is placed on top of the stack, and you can choose another stack (or the same one) to continue.</li>
+                <li>If you guess incorrectly, the stack is "flipped" (grayed out) and can no longer be used.</li>
+            </ul>
+        </p>
+        <p>
+            3. <b>Winning and Losing:</b>
+            <ul>
+                <li><b>You win</b> if you use up all the cards in the draw pile before all the stacks are flipped.</li>
+                <li><b>You lose</b> if all the stacks are flipped before you use up all the cards in the draw pile.</li>
+            </ul>
+        </p>
+         <p>
+            4. <b>Changing the Number of Stacks</b>
+            <ul>
+                <li>You can adjust the number of starting stacks on the title screen by moving the slider, which can make the game easier or more challenging.</li>
+            </ul>
+        </p>
+
+        <button id="back-to-title">Back to Title</button>
+    </div>
+    <audio id="dealSound" src="sounds/deal.wav"></audio>
+    <audio id="correctSound" src="sounds/correct.wav"></audio>
+    <audio id="incorrectSound" src="sounds/incorrect.wav"></audio>
+    <audio id="winSound" src="sounds/win.wav"></audio>
+    <audio id="loseSound" src="sounds/lose.wav"></audio>
+    <audio id="clickSound" src="sounds/click.wav"></audio>
 
     <script src="script.js"></script>
 </body>

@@ -1,7 +1,7 @@
 /* General styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
+    background-color: #228B22; /* Forest Green background */
     margin: 0;
     padding: 0;
     display: flex;
@@ -9,6 +9,7 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    color: white; /* White text for contrast */
 }
 
 /* Notification area */
@@ -21,7 +22,7 @@ body {
 }
 
 .notification {
-    background-color: #333;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
@@ -42,56 +43,64 @@ body {
 /* Container for the cards */
 #card-container {
     display: grid;
-    grid-template-columns: repeat(var(--stack-amount), 200px); /* Dynamic grid */
     grid-gap: 20px;
     justify-content: center;
     margin-top: 20px;
-    padding-bottom: 40px;
+    padding: 20px; /* Padding around the cards */
+    perspective: 1000px; /* For 3D flip effect (removed, but kept for potential future use) */
 }
 
 /* Card styles */
 .card {
-    width: 150px;
-    height: 220px;
+    width: 100px;
+    height: 140px; /* Standard playing card aspect ratio */
     background-color: white;
-    border: 2px solid #333;
-    border-radius: 10px;
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    justify-content: space-between; /* Distribute space */
+    padding: 8px;
     position: relative;
     cursor: pointer;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    /* Removed backface-visibility */
 }
 
 .card:hover {
     transform: scale(1.05);
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .card .value {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
-    margin-bottom: 8px;
+    align-self: flex-start; /* Align to top-left */
+    color: black; /* Default color */
 }
 
 .card .suit {
-    font-size: 30px;
-    margin-bottom: 20px;
+    font-size: 24px;
+    color: black; /* Default color */
+}
+/* change color for red cards*/
+.card .suit.hearts,
+.card .suit.diamonds {
+    color: red;
 }
 
 .card button {
-    width: 100px;
-    height: 35px;
-    margin-top: 15px;
-    background-color: #f4f4f9;
+    width: 80px;
+    height: 30px;
+    margin-top: 5px;
+    background-color: #eee;
     color: #333;
-    border: none;
-    border-radius: 20px;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* Rounded buttons */
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.2s, transform 0.2s;
     font-weight: bold;
 }
 
@@ -106,48 +115,45 @@ body {
 }
 
 .card .higher {
-    background: linear-gradient(to top, #2ecc71, #27ae60);
+    background: linear-gradient(to top, #4CAF50, #388E3C); /* Green */
     color: white;
 }
 
 .card .lower {
-    background: linear-gradient(to top, #e74c3c, #c0392b);
+    background: linear-gradient(to top, #F44336, #D32F2F); /* Red */
     color: white;
 }
-
-.card .higher:hover {
-    background: linear-gradient(to top, #27ae60, #2ecc71);
+.card .higher:hover{
+      background: linear-gradient(to top, #388E3C, #4CAF50);
 }
-
 .card .lower:hover {
-    background: linear-gradient(to top, #c0392b, #e74c3c);
+  background: linear-gradient(to top,  #D32F2F, #F44336); /* Red */
+
 }
 
 .card.flipped {
-    background-color: #f0f0f0;
-    color: #bbb;
-    pointer-events: none;
-    transform: rotateY(180deg);
-    transition: transform 0.6s ease-in-out;
+     background-color: #ccc; /* Grayed out */
+    color: #888;         /* Darker gray text */
+    border-color: #999;    /* Gray border */
+    box-shadow: none;      /* Remove shadow */
+    pointer-events: none;  /* Disable clicks */
+    /* Removed transform */
 }
 
 .card .buttons {
-    display: none;
-}
-
-.card.active .buttons {
-    display: flex;
+    display: flex; /* Always show buttons */
     justify-content: space-between;
-    margin-top: 10px;
 }
 
+
+/* Title screen styles */
 #title-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #f4f4f9;
+    background-color: #228B22;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -156,33 +162,70 @@ body {
 }
 
 #title-screen h1 {
-    margin-bottom: 20px;
+    font-family: 'Bree Serif', serif; /* Use Google Font */
+    font-size: 3rem;
+    margin-bottom: 30px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .slider-container {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
+    width: 80%;
+    max-width: 400px;
+    justify-content: space-between;
 }
 
 .slider-container label {
     margin-right: 10px;
+    font-size: 1rem;
+    color: white;
+}
+#stack-amount{
+    flex: 1;
+    margin-right: 10px;
 }
 
+#stack-amount-value {
+    min-width: 2em;
+    text-align: center;
+    color: white;
+}
 #start-game {
-    padding: 10px 20px;
+    padding: 12px 24px;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
+    transition: background-color 0.3s;
+    margin-bottom: 15px; /* Add some space below the button */
+
 }
 
 #start-game:hover {
     background-color: #45a049;
 }
+#rules-button {
+    padding: 12px 24px;
+    background-color: #5dade2; /* A nice blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+    margin-top: 10px; /* Add space above the Rules button */
+}
 
+#rules-button:hover {
+    background-color: #3498db; /* A slightly darker blue on hover */
+}
+
+/* Draw pile count */
 #draw-pile-count {
     position: fixed;
     bottom: 20px;
@@ -192,4 +235,80 @@ body {
     padding: 10px;
     border-radius: 5px;
     z-index: 1000;
+}
+
+/* Game area */
+#game-area{
+    width: 95%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Rules Screen Styles */
+#rules-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #228B22;
+    display: none; /* Initially hidden */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002; /* Higher than title screen */
+    padding: 20px;
+    overflow-y: auto; /* Enable scrolling if content is long */
+}
+
+#rules-screen h2 {
+    font-family: 'Bree Serif', serif;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#rules-screen p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    max-width: 800px; /* Limit width for readability */
+    text-align: left; /* Left-align the text */
+}
+#back-to-title {
+    padding: 10px 20px;
+    background-color: #e74c3c; /* Red color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+#back-to-title:hover {
+    background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Play Again Button Styles */
+#play-again {
+    padding: 12px 24px;
+    background-color: #3498db; /* Blue color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+    margin-top: 20px; /* Space it from the notification */
+    position: absolute;   /* Absolute positioning */
+    bottom: 20px;          /* 20px from the bottom */
+    left: 50%;            /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for centering */
+}
+
+#play-again:hover {
+    background-color: #2980b9; /* Darker blue on hover */
 }
