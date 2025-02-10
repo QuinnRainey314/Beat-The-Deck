@@ -318,7 +318,7 @@ body {
 /* Timer Styles */
 #timer-display {
     position: absolute;
-    top: 20px;
+    top: 0px;
     left: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
@@ -340,7 +340,7 @@ body {
     transition: background-color 0.3s ease;
     position: absolute;
     top: 20px;
-    left: 50%;
+    left: 80%;
     transform: translateX(-50%);
 }
 
