@@ -242,6 +242,8 @@ body {
     width: 95%;
     max-width: 1200px;
     margin: auto;
+    position: relative; /* Make sure the game area is positioned relatively */
+
 }
 
 /* Rules Screen Styles */
@@ -311,4 +313,107 @@ body {
 
 #play-again:hover {
     background-color: #2980b9; /* Darker blue on hover */
+}
+
+/* Timer Styles */
+#timer-display {
+    position: absolute;
+    top: 0px;
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+#mute-button {
+     display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #7f8c8d;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: absolute;
+    top: 20px;
+    left: 80%;
+    transform: translateX(-50%);
+}
+
+#mute-button:hover {
+    background-color: #95a5a6;
+}
+
+#mute-button:focus {
+    outline: 2px solid #0050b3;
+}
+
+@media (max-width: 768px) {
+    #mute-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+}
+
+/* Profile Creation Styles */
+#profile-creation {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+#profile-creation label {
+    display: block; /* Labels on their own line */
+    margin-bottom: 5px;
+}
+
+#profile-creation input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    width: 200px; /* Set a specific width */
+}
+
+#profile-creation button {
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#profile-creation button:hover {
+    background-color: #2980b9;
+}
+
+/* Profile Display Styles */
+#profile-display {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    padding: 10px;
+    background-color: rgba(0,0,0, 0.2);
+    border-radius: 8px;
+}
+#delete-profile{
+     padding: 12px 24px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+#delete-profile:hover{
+    background-color: #c0392b;
 }

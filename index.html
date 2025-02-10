@@ -10,19 +10,28 @@
 <body>
     <div id="title-screen">
         <h1>Beat the Deck</h1>
+        <div id="profile-creation" style="display: none;">
+            <label for="player-name">Enter your name:</label>
+            <input type="text" id="player-name" placeholder="Player Name">
+            <button id="create-profile">Create Profile</button>
+        </div>
+        <div id="profile-display"></div>
         <div class="slider-container">
             <label for="stack-amount">Number of Stacks:</label>
             <input type="range" id="stack-amount" name="stack-amount" min="1" max="18" value="9">
             <span id="stack-amount-value">9</span>
         </div>
         <button id="start-game">Start Game</button>
-        <button id="rules-button">Rules</button> </div>
+        <button id="rules-button">Rules</button>
+        <button id = "delete-profile"> Delete Profile </button>
+    </div>
+
 
     <div id="game-area" style="display: none;">
         <div id="notification-area"></div>
         <div id="card-container"></div>
         <div id="draw-pile-count">Cards Left: <span id="draw-count"></span></div>
-    </div>
+        </div>
 
     <div id="rules-screen" style="display: none;">
         <h2>Beat the Deck - Rules</h2>
@@ -61,12 +70,13 @@
 
         <button id="back-to-title">Back to Title</button>
     </div>
-    <audio id="dealSound" src="sounds/deal.wav"></audio>
-    <audio id="correctSound" src="sounds/correct.wav"></audio>
-    <audio id="incorrectSound" src="sounds/incorrect.wav"></audio>
-    <audio id="winSound" src="sounds/win.wav"></audio>
-    <audio id="loseSound" src="sounds/lose.wav"></audio>
-    <audio id="clickSound" src="sounds/click.wav"></audio>
+    <audio id="dealSound"></audio>
+    <audio id="correctSound"></audio>
+    <audio id="incorrectSound"></audio>
+    <audio id="winSound"></audio>
+    <audio id="loseSound"></audio>
+    <audio id="clickSound"></audio>
+     <audio id="hoverSound"></audio>
 
     <script src="script.js"></script>
 </body>
