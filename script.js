@@ -51,16 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
     playAgainButton.textContent = 'Play Again';
     playAgainButton.id = 'play-again';
     playAgainButton.style.display = 'none';
+
     const muteButton = document.createElement('button');
     muteButton.id = 'mute-button';
-    muteButton.innerHTML = getMuteIcon(isMuted);
+    muteButton.innerHTML = getMuteIcon(isMuted); // Initial icon
+
+
     const timerDisplay = document.createElement('div');
     timerDisplay.id = 'timer-display';
     timerDisplay.textContent = 'Time: 0s';
+
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     let dealSound, correctSound, incorrectSound, winSound, loseSound, clickSound, hoverSound;
 
-    function loadSound(url, callback) {
+      function loadSound(url, callback) {
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -120,7 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDrawPileCount();
         createCards();
         updateGrid();
-        document.body.appendChild(playAgainButton);
+        //Append to gameArea when the game has started.
+        gameArea.appendChild(playAgainButton);
         playSound(dealSound);
 
         seconds = 0;
@@ -130,14 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
             seconds++;
             timerDisplay.textContent = `Time: ${seconds}s`;
         }, 1000);
-         if (!document.getElementById('timer-display')) {
-                gameArea.appendChild(timerDisplay);
-         }
-        if(!document.getElementById('mute-button')){
-            gameArea.appendChild(muteButton);
-        }
+        gameArea.appendChild(timerDisplay); //add to dom
+        gameArea.appendChild(muteButton); //add to dom
     }
- function createCards() {
+
+  function createCards() {
     cardContainer.innerHTML = '';
     activeIndex = null;
 
@@ -298,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (wins > 0 && seconds < currentPlayer.highScore) {
             currentPlayer.highScore = seconds;
         }
-        localStorage.setItem('currentPlayer', JSON.stringify(currentPlayer)); // Save updated data
+        localStorage.setItem('currentPlayer', JSON.stringify(currentPlayer));
     }
 }
     function checkGameOver() {
@@ -341,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             localStorage.setItem('currentPlayer', JSON.stringify(currentPlayer));
             document.getElementById('profile-creation').style.display = 'none';
-            displayProfile(); // Show the profile info
+            displayProfile();
             document.getElementById('start-game').style.display = 'inline-block';
             document.getElementById('rules-button').style.display = 'inline-block';
             document.getElementById('delete-profile').style.display = 'inline-block';
@@ -393,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
      // --- Event Listeners ---
     stackAmountValue.textContent = stackAmount;
     updateGrid();
-    loadProfile(); // Load the profile when the page loads
+    loadProfile();
 
     stackAmountSlider.addEventListener('input', () => {
         stackAmount = parseInt(stackAmountSlider.value);
@@ -431,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     muteButton.addEventListener('click', () => {
       isMuted = !isMuted;
-      muteButton.innerHTML = getMuteIcon(isMuted);
+      muteButton.innerHTML = getMuteIcon(isMuted); // Update the icon
     });
 
     document.getElementById('create-profile').addEventListener('click', createProfile);

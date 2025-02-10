@@ -242,7 +242,7 @@ body {
     width: 95%;
     max-width: 1200px;
     margin: auto;
-    position: relative; /* Make sure the game area is positioned relatively */
+    position: relative; /* VERY IMPORTANT */
 
 }
 
@@ -318,7 +318,7 @@ body {
 /* Timer Styles */
 #timer-display {
     position: absolute;
-    top: 0px;
+    top: 20px;
     left: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
@@ -327,7 +327,7 @@ body {
     z-index: 1000;
 }
 #mute-button {
-     display: inline-flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     width: 50px;
@@ -340,7 +340,7 @@ body {
     transition: background-color 0.3s ease;
     position: absolute;
     top: 20px;
-    left: 80%;
+    left: 50%;
     transform: translateX(-50%);
 }
 
@@ -356,7 +356,6 @@ body {
     #mute-button {
         width: 40px;
         height: 40px;
-        font-size: 20px;
     }
 }
 
