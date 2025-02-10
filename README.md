@@ -39,21 +39,6 @@
 *   Web Audio API
 *   GitHub Pages
 
-## Project Structure
-beat-the-deck/
-├── index.html       <-- Main HTML
-├── style.css        <-- CSS
-├── script.js        <-- JavaScript
-├── sounds/          <-- Sound effects (.wav)
-│   ├── deal.wav
-│   ├── correct.wav
-│   ├── incorrect.wav
-│   ├── win.wav
-│   ├── lose.wav
-│   ├── click.wav
-│   └── hover.wav
-└── README.md        <-- This file
-
 ## How to Run Locally
 
 1.  **Clone the repository:**
